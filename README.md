@@ -12,18 +12,21 @@ Agent Skills 是通过 `SKILL.md` 向 Agent 注入特定任务流程、输出格
 skills-demo/
 ├── README.md
 └── examples/
-    └── hello-word/          # 最小 Skill 示例（问候语）
+    ├── hello-world/         # 最小 Skill 示例（问候语）
+    │   └── SKILL.md
+    └── roll-dice/           # 掷骰子：用终端命令生成随机数
         └── SKILL.md
 ```
 
 | 路径 | 说明 |
 |------|------|
 | `examples/` | 示例 Skill 集合 |
-| `examples/hello-word/` | Hello World 演示 Skill |
+| `examples/hello-world/` | Hello World 演示 Skill |
+| `examples/roll-dice/` | 掷骰子演示 Skill（终端随机数） |
 
 ## 示例：hello-world
 
-路径：[`examples/hello-word/SKILL.md`](examples/hello-word/SKILL.md)
+路径：[`examples/hello-world/SKILL.md`](examples/hello-world/SKILL.md)
 
 这是一个最小 Skill，演示固定格式问候：
 
@@ -38,6 +41,17 @@ skills-demo/
 | hello world | `Hello, World!` |
 | hello runoops | `Hello, runoops!` |
 
+## 示例：roll-dice
+
+路径：[`examples/roll-dice/SKILL.md`](examples/roll-dice/SKILL.md)
+
+演示通过**终端命令**生成随机数来掷骰子，而不是由模型自己编造数字：
+
+- **触发场景**：用户说掷骰子、roll dice、`2d6` / `d20` 等
+- **行为**：用 `python -c "…random.randint…"`（或 PowerShell `Get-Random`）出结果并简短回复
+- **默认**：`1d6`；支持 `NdM` 多骰与求和
+- **`disable-model-invocation: true`**：适合显式 `@roll-dice` 演示
+
 ## 如何试用
 
 Skill 需要放到 Agent 可加载的技能目录后才会生效。本仓库的 `examples/` 是示例源码，可按需复制到下列位置之一：
@@ -47,11 +61,17 @@ Skill 需要放到 Agent 可加载的技能目录后才会生效。本仓库的 
 | 个人 Skill | 用户配置目录下的 `skills/<skill-name>/` | 对本机所有项目可用 |
 | 项目 Skill | 仓库内项目级 `skills/<skill-name>/` | 仅当前仓库（可随仓库共享） |
 
-试用 `hello-word` 示例：
+试用 `hello-world` 示例：
 
-1. 将 `examples/hello-word` 复制到个人或项目的技能目录，并保持目录名为 `hello-word`
+1. 将 `examples/hello-world` 复制到个人或项目的技能目录，并保持目录名为 `hello-world`
 2. 在 Agent 对话中发送 `hello world` 或 `hello <你的名字>`
 3. 观察回复是否符合 Skill 规定的格式
+
+试用 `roll-dice` 示例：
+
+1. 将 `examples/roll-dice` 复制到个人或项目的技能目录，并保持目录名为 `roll-dice`
+2. 在 Agent 对话中 `@roll-dice` 或发送「掷骰子」「roll 2d6」
+3. 确认 Agent 先跑终端命令再给出点数
 
 > 注意：不要把自定义 Skill 写入由内置能力占用的系统技能目录。
 
